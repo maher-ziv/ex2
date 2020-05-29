@@ -73,24 +73,9 @@ def readParseData(file_name):
 
     return competitors_in_competitions
 
-
-
-    
-def calcCompetitionsResults(competitors_in_competitions):
-    '''
-    Given the data of the competitors, the function returns the champs countries for each competition.
-    Arguments:
-        competitors_in_competitions: A list that contains the data of the competitors
-                                    (see readParseData return value for more info)
-    Retuen value:
-        A list of competitions and their champs (list of lists). 
-        Every record in the list contains the competition name and the champs, in the following format:
-        [competition_name, winning_gold_country, winning_silver_country, winning_bronze_country]
-    '''
-    competitions_champs = [] 
+def  filterAndSort(competitors_in_competitions):
     new_list = competitors_in_competitions
-    
-    for elem in  competitors_in_competitions :
+    for elem in competitors_in_competitions :
         count = 0 
         for i in competitors_in_competitions :
             if elem['competition name'] == i['competition name'] and elem['competitor id'] == i['competitor id']:
@@ -105,13 +90,26 @@ def calcCompetitionsResults(competitors_in_competitions):
 
     timed_knockout__list = sorted(timed_knockout__list  ,key = lambda l: (l['competition type'],l['competition name'],l['result'])) 
     untimed_list = sorted(untimed_list , key = lambda l: (l['competition name'],l['result']) ,reverse=True )
-    new_list = timed_knockout__list + untimed_list
+    new_list=timed_knockout__list + untimed_list
+    return new_list
+    
+def calcCompetitionsResults(competitors_in_competitions):
+    '''
+    Given the data of the competitors, the function returns the champs countries for each competition.
+    Arguments:
+        competitors_in_competitions: A list that contains the data of the competitors
+                                    (see readParseData return value for more info)
+    Retuen value:
+        A list of competitions and their champs (list of lists). 
+        Every record in the list contains the competition name and the champs, in the following format:
+        [competition_name, winning_gold_country, winning_silver_country, winning_bronze_country]
+    '''
+    competitions_champs = [] 
+    new_list = filterAndSort(competitors_in_competitions)
     checked = [] 
-  #  index = 0
     for index, competitor in enumerate(new_list):
         winner = ['undef_country','undef_country','undef_country']
         if competitor['competition name'] in checked:
-          #  index+=1
             continue
         checked.extend([competitor['competition name']])
         i = 0
@@ -120,8 +118,6 @@ def calcCompetitionsResults(competitors_in_competitions):
                 winner[i] = new_list[index+i]['competitor country']
             i+=1
         competitions_champs.append([competitor['competition name'],winner[0],winner[1],winner[2]])
-       # index+=1
-
     return competitions_champs
 
 
@@ -163,6 +159,6 @@ if __name__ == "__main__":
     To run only a single part, comment the line below which correspondes to the part you don't want to run.
     '''    
     #file_name = 'input.txt'
-    file_name = 'tests/in/test4.txt'
+    file_name = 'tests/in/test3.txt'
     partA(file_name)
     partB(file_name)
