@@ -1,4 +1,5 @@
-from copy import deepcopy
+import Olympics
+
 def printCompetitor(competitor):
     '''
     Given the data of a competitor, the function prints it in a specific format.
@@ -63,10 +64,10 @@ def readParseData(file_name):
 
     for line in f:
         if len(line.split()) == 3:
-            country_dict[line.split()[1]] = line.split()[2]
+          country_dict[line.split()[1]] = line.split()[2]
         else:
             info_list.append(line.split())
-    f.close()
+
     for element in info_list:
         new_dict = {"competition name": element[1] , "competition type": element[3] , "competitor id": int(element[2]), "competitor country": country_dict[element[2]],"result": int(element[4]) }
         competitors_in_competitions.append(new_dict)
@@ -74,21 +75,8 @@ def readParseData(file_name):
     return competitors_in_competitions
 
 
-def removeCheaters(competitors_in_competitions):
 
-    new_list = competitors_in_competitions
-    for elem in  competitors_in_competitions :
-        count = 0 
-        for i in competitors_in_competitions :
-            if elem['competition name'] == i['competition name'] and elem['competitor id'] == i['competitor id']:
-                count+=1
-        if count > 1 :
-            new_list = [i for i in new_list if not (elem['competition name'] == i['competition name']
-                                                                     and elem['competitor id'] == i['competitor id']) ]
-            
-    return new_list
-
-
+    
 def calcCompetitionsResults(competitors_in_competitions):
     '''
     Given the data of the competitors, the function returns the champs countries for each competition.
@@ -101,35 +89,40 @@ def calcCompetitionsResults(competitors_in_competitions):
         [competition_name, winning_gold_country, winning_silver_country, winning_bronze_country]
     '''
     competitions_champs = [] 
-    list = removeCheaters(competitors_in_competitions)
+    new_list = competitors_in_competitions
+    
+    for elem in  competitors_in_competitions :
+        count = 0 
+        for i in competitors_in_competitions :
+            if elem['competition name'] == i['competition name'] and elem['competitor id'] == i['competitor id']:
+                count+=1
+        if count > 1 :
+            new_list = [i for i in new_list if not (elem['competition name'] == i['competition name']
+                                                                     and elem['competitor id'] == i['competitor id']) ]
 
-    timed_list = [elem for elem in list if (elem['competition type'] == 'timed')]
-    untimed_list = [elem for elem in list if (elem['competition type'] == 'untimed')]
-    knockout_list = [elem for elem in list if (elem['competition type'] == 'knockout')]
+    timed_list = [elem for elem in new_list if (elem['competition type'] == 'timed')]
+    knockout_untimed_list = [elem for elem in new_list if (elem['competition type'] == 'untimed' 
+                                                                or elem['competition type'] == 'knockout')]
 
     timed_list = sorted(timed_list  ,key = lambda l: (l['competition name'],l['result'])) 
-    untimed_list = sorted(untimed_list , key = lambda l: (l['competition name'],l['result']) , reverse=True)
-    knockout_list = sorted(knockout_list , key = lambda l: (l['competition name'],l['result']) , reverse=True)
-
-    new_list = timed_list + untimed_list + knockout_list
+    knockout_untimed_list = sorted(knockout_untimed_list , key = lambda l: (l['competition type'],l['competition name'],l['result']) 
+                                                                                                                 ,reverse=True  )
+    new_list = timed_list + knockout_untimed_list
     checked = [] 
-    index = 0
-    for competitor in new_list:
+  #  index = 0
+    for index, competitor in enumerate(new_list):
         winner = ['undef_country','undef_country','undef_country']
-
         if competitor['competition name'] in checked:
-            index+=1
+          #  index+=1
             continue
-
         checked.extend([competitor['competition name']])
         i = 0
         while i < 3 and i+index < len(new_list):
             if new_list[index+i]['competition name'] == competitor['competition name']:
                 winner[i] = new_list[index+i]['competitor country']
             i+=1
-
         competitions_champs.append([competitor['competition name'],winner[0],winner[1],winner[2]])
-        index+=1
+       # index+=1
 
     return competitions_champs
 
@@ -154,7 +147,13 @@ def partA(file_name = 'input.txt', allow_prints = True):
 
 def partB(file_name = 'input.txt'):
     competitions_results = partA(file_name, allow_prints = False)
-    # TODO Part B
+    new_olympics = Olympics.OlympicsCreate()
+    for element in competitions_results:
+        Olympics.OlympicsUpdateCompetitionResults(new_olympics, str(element[1]),str(element[2]), str(element[3]))
+    Olympics.OlympicsWinningCountry(new_olympics)
+    Olympics.OlympicsDestroy(new_olympics)
+    
+    
 
 
 if __name__ == "__main__":
@@ -167,4 +166,4 @@ if __name__ == "__main__":
     file_name = 'tests/in/test2.txt'
 
     partA(file_name)
-    # partB(file_name)
+    partB(file_name)
