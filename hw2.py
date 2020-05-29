@@ -1,4 +1,3 @@
-import Olympics
 
 def printCompetitor(competitor):
     '''
@@ -146,6 +145,7 @@ def partA(file_name = 'input.txt', allow_prints = True):
 
 
 def partB(file_name = 'input.txt'):
+    import Olympics
     competitions_results = partA(file_name, allow_prints = False)
     new_olympics = Olympics.OlympicsCreate()
     for element in competitions_results:
@@ -163,7 +163,7 @@ if __name__ == "__main__":
     
     To run only a single part, comment the line below which correspondes to the part you don't want to run.
     '''    
-    file_name = 'tests/in/test2.txt'
-
+    #file_name = 'input.txt'
+    file_name = 'tests/in/test1.txt'
     partA(file_name)
     partB(file_name)
