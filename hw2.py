@@ -99,14 +99,13 @@ def calcCompetitionsResults(competitors_in_competitions):
             new_list = [i for i in new_list if not (elem['competition name'] == i['competition name']
                                                                      and elem['competitor id'] == i['competitor id']) ]
 
-    timed_list = [elem for elem in new_list if (elem['competition type'] == 'timed')]
-    knockout_untimed_list = [elem for elem in new_list if (elem['competition type'] == 'untimed' 
-                                                                or elem['competition type'] == 'knockout')]
+    timed_knockout__list = [elem for elem in new_list if (elem['competition type'] == 'timed')
+                                                                            or elem['competition type'] == 'knockout']
+    untimed_list = [elem for elem in new_list if (elem['competition type'] == 'untimed')]
 
-    timed_list = sorted(timed_list  ,key = lambda l: (l['competition name'],l['result'])) 
-    knockout_untimed_list = sorted(knockout_untimed_list , key = lambda l: (l['competition type'],l['competition name'],l['result']) 
-                                                                                                                 ,reverse=True  )
-    new_list = timed_list + knockout_untimed_list
+    timed_knockout__list = sorted(timed_knockout__list  ,key = lambda l: (l['competition type'],l['competition name'],l['result'])) 
+    untimed_list = sorted(untimed_list , key = lambda l: (l['competition name'],l['result']) ,reverse=True )
+    new_list = timed_knockout__list + untimed_list
     checked = [] 
   #  index = 0
     for index, competitor in enumerate(new_list):
@@ -164,6 +163,6 @@ if __name__ == "__main__":
     To run only a single part, comment the line below which correspondes to the part you don't want to run.
     '''    
     #file_name = 'input.txt'
-    file_name = 'tests/in/test1.txt'
+    file_name = 'tests/in/test4.txt'
     partA(file_name)
     partB(file_name)
