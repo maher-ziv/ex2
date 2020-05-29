@@ -1,3 +1,4 @@
+from copy import deepcopy
 def printCompetitor(competitor):
     '''
     Given the data of a competitor, the function prints it in a specific format.
@@ -56,10 +57,36 @@ def readParseData(file_name):
                 'result': result}
     '''
     competitors_in_competitions = []
-    # TODO Part A, Task 3.4
+    info_list = []
+    country_dict = {}
+    f=open(file_name, 'r') 
 
+    for line in f:
+        if len(line.split()) == 3:
+            country_dict[line.split()[1]] = line.split()[2]
+        else:
+            info_list.append(line.split())
+    f.close()
+    for element in info_list:
+        new_dict = {"competition name": element[1] , "competition type": element[3] , "competitor id": int(element[2]), "competitor country": country_dict[element[2]],"result": int(element[4]) }
+        competitors_in_competitions.append(new_dict)
 
     return competitors_in_competitions
+
+
+def removeCheaters(competitors_in_competitions):
+
+    new_list = competitors_in_competitions
+    for elem in  competitors_in_competitions :
+        count = 0 
+        for i in competitors_in_competitions :
+            if elem['competition name'] == i['competition name'] and elem['competitor id'] == i['competitor id']:
+                count+=1
+        if count > 1 :
+            new_list = [i for i in new_list if not (elem['competition name'] == i['competition name']
+                                                                     and elem['competitor id'] == i['competitor id']) ]
+            
+    return new_list
 
 
 def calcCompetitionsResults(competitors_in_competitions):
@@ -73,9 +100,37 @@ def calcCompetitionsResults(competitors_in_competitions):
         Every record in the list contains the competition name and the champs, in the following format:
         [competition_name, winning_gold_country, winning_silver_country, winning_bronze_country]
     '''
-    competitions_champs = []
-    # TODO Part A, Task 3.5
-    
+    competitions_champs = [] 
+    list = removeCheaters(competitors_in_competitions)
+
+    timed_list = [elem for elem in list if (elem['competition type'] == 'timed')]
+    untimed_list = [elem for elem in list if (elem['competition type'] == 'untimed')]
+    knockout_list = [elem for elem in list if (elem['competition type'] == 'knockout')]
+
+    timed_list = sorted(timed_list  ,key = lambda l: (l['competition name'],l['result'])) 
+    untimed_list = sorted(untimed_list , key = lambda l: (l['competition name'],l['result']) , reverse=True)
+    knockout_list = sorted(knockout_list , key = lambda l: (l['competition name'],l['result']) , reverse=True)
+
+    new_list = timed_list + untimed_list + knockout_list
+    checked = [] 
+    index = 0
+    for competitor in new_list:
+        winner = ['undef_country','undef_country','undef_country']
+
+        if competitor['competition name'] in checked:
+            index+=1
+            continue
+
+        checked.extend([competitor['competition name']])
+        i = 0
+        while i < 3 and i+index < len(new_list):
+            if new_list[index+i]['competition name'] == competitor['competition name']:
+                winner[i] = new_list[index+i]['competitor country']
+            i+=1
+
+        competitions_champs.append([competitor['competition name'],winner[0],winner[1],winner[2]])
+        index+=1
+
     return competitions_champs
 
 
@@ -89,6 +144,7 @@ def partA(file_name = 'input.txt', allow_prints = True):
     
     # calculate competition results
     competitions_results = calcCompetitionsResults(competitors_in_competitions)
+    # print(competitions_results)
     if allow_prints:
         for competition_result_single in sorted(competitions_results):
             printCompetitionResults(*competition_result_single)
@@ -108,7 +164,7 @@ if __name__ == "__main__":
     
     To run only a single part, comment the line below which correspondes to the part you don't want to run.
     '''    
-    file_name = 'input.txt'
+    file_name = 'tests/in/test2.txt'
 
     partA(file_name)
-    partB(file_name)
+    # partB(file_name)
