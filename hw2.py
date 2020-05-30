@@ -78,13 +78,13 @@ def  filterAndSort(lst):
     untimed = [elem for elem in lst if (elem['competition type'] == 'untimed')]              
     
     for elem in lst :
-        tmp = [i for i in lst if (elem['competition name']==i['competition name'] and elem['competitor id']==i['competitor id']) ]
+        tmp = [i for i in lst if (elem['competition name']==i['competition name'] and elem['competitor id']==i['competitor id'])]
         if len(tmp) > 1: #remove cheaters 
             timed_knockout = [i for i in timed_knockout if not (elem['competition name'] == i['competition name'] and elem['competitor id'] == i['competitor id'])]
-            untimed = [i for i in untimed if not (elem['competition name'] == i['competition name'] and elem['competitor id'] == i['competitor id']) ]        
+            untimed=[i for i in untimed if not (elem['competition name'] == i['competition name'] and elem['competitor id'] == i['competitor id']) ]        
                                                                     
-    timed_knockout = sorted(timed_knockout ,key = lambda l: (l['competition type'],l['competition name'],l['result'])) 
-    untimed = sorted(untimed , key = lambda l: (l['competition name'],l['result']) ,reverse=True )
+    timed_knockout.sort(key = lambda l: (l['competition type'],l['competition name'],l['result'])) 
+    untimed.sort(key = lambda l: (l['competition name'],l['result']) ,reverse=True )
     return timed_knockout + untimed
     
 def calcCompetitionsResults(competitors_in_competitions):
@@ -153,6 +153,6 @@ if __name__ == "__main__":
     To run only a single part, comment the line below which correspondes to the part you don't want to run.
     '''    
     #file_name = 'input.txt'
-    file_name = 'tests/in/test7.txt'
+    file_name = 'tests/in/test6.txt'
     partA(file_name)
     partB(file_name)
