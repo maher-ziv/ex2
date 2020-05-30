@@ -17,9 +17,9 @@ for files in os.listdir(directory):
     l1 = hw2.filterAndSort(l1)
     filter_res = pd.DataFrame(l1).reindex(columns=['competition name','competition type','competitor id','competitor country','result'])
     print(colored('\n \t\t------filterAndSort output----\n ','yellow' ),filter_res)
-    
-    calc_results = pd.DataFrame(l2).reindex(columns=['competition name','winning_gold_country','winning_silver_country','winning_bronze_country'])
-    print(colored('\n \t\t------calcCompetitionsResults output----\n ','green' ),calc_results)
+
+    cprint('\n \t\t------calcCompetitionsResults output----\n ','green')
+    print(*l2 ,sep = '\n')
 
     cprint('\n \t\t------Olympic winner---- ','cyan',attrs=['blink'] )
     hw2.partB(file_name)
