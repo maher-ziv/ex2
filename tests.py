@@ -10,15 +10,16 @@ for files in os.listdir(directory):
     cprint(f'\t\t\trunning {files} ','white','on_green')
     file_name = directory+os.fsdecode(files)
     l1 = hw2.readParseData(file_name) 
-    res = hw2.calcCompetitionsResults(l1)
-    filter_res = pd.DataFrame(l1).reindex(columns=['competition name','competition type','competitor id','competitor country','result'])
-    print(colored('\t\t-----old list----\n','red'),filter_res) 
+    l2 = hw2.calcCompetitionsResults(l1)
+    read_parse_data = pd.DataFrame(l1).reindex(columns=['competition name','competition type','competitor id','competitor country','result'])
+    print(colored('\t\t-----readParseData output----\n','red'),read_parse_data) 
 
     l1 = hw2.filterAndSort(l1)
     filter_res = pd.DataFrame(l1).reindex(columns=['competition name','competition type','competitor id','competitor country','result'])
-    print(colored('\n \t\t------new list----\n ','yellow' ),filter_res)
-
-    print(colored('\n \t\t------finla result----\n ','green' ),res)
+    print(colored('\n \t\t------filterAndSort output----\n ','yellow' ),filter_res)
+    
+    calc_results = pd.DataFrame(l2).reindex(columns=['competition name','winning_gold_country','winning_silver_country','winning_bronze_country'])
+    print(colored('\n \t\t------calcCompetitionsResults output----\n ','green' ),calc_results)
 
     cprint('\n \t\t------Olympic winner---- ','cyan',attrs=['blink'] )
     hw2.partB(file_name)
