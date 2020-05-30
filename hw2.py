@@ -73,25 +73,19 @@ def readParseData(file_name):
 
     return competitors_in_competitions
 
-def  filterAndSort(competitors_in_competitions):
-    new_list = competitors_in_competitions
-    for elem in competitors_in_competitions :
-        count = 0 
-        for i in competitors_in_competitions :
-            if elem['competition name'] == i['competition name'] and elem['competitor id'] == i['competitor id']:
-                count+=1
-        if count > 1 :
-            new_list = [i for i in new_list if not (elem['competition name'] == i['competition name']
-                                                                     and elem['competitor id'] == i['competitor id']) ]
-
-    timed_knockout__list = [elem for elem in new_list if (elem['competition type'] == 'timed')
-                                                                            or elem['competition type'] == 'knockout']
-    untimed_list = [elem for elem in new_list if (elem['competition type'] == 'untimed')]
-
-    timed_knockout__list = sorted(timed_knockout__list  ,key = lambda l: (l['competition type'],l['competition name'],l['result'])) 
-    untimed_list = sorted(untimed_list , key = lambda l: (l['competition name'],l['result']) ,reverse=True )
-    new_list=timed_knockout__list + untimed_list
-    return new_list
+def  filterAndSort(lst):
+    timed_knockout = [elem for elem in lst if (elem['competition type'] == 'timed') or elem['competition type'] == 'knockout']
+    untimed = [elem for elem in lst if (elem['competition type'] == 'untimed')]              
+    
+    for elem in lst :
+        tmp = [i for i in lst if (elem['competition name']==i['competition name'] and elem['competitor id']==i['competitor id']) ]
+        if len(tmp) > 1: #remove cheaters 
+            timed_knockout = [i for i in timed_knockout if not (elem['competition name'] == i['competition name'] and elem['competitor id'] == i['competitor id'])]
+            untimed = [i for i in untimed if not (elem['competition name'] == i['competition name'] and elem['competitor id'] == i['competitor id']) ]        
+                                                                    
+    timed_knockout = sorted(timed_knockout ,key = lambda l: (l['competition type'],l['competition name'],l['result'])) 
+    untimed = sorted(untimed , key = lambda l: (l['competition name'],l['result']) ,reverse=True )
+    return timed_knockout + untimed
     
 def calcCompetitionsResults(competitors_in_competitions):
     '''
@@ -113,7 +107,7 @@ def calcCompetitionsResults(competitors_in_competitions):
             continue
         checked.extend([competitor['competition name']])
         i = 0
-        while i < 3 and i+index < len(new_list):
+        while i < 3 and (i+index < len(new_list)):
             if new_list[index+i]['competition name'] == competitor['competition name']:
                 winner[i] = new_list[index+i]['competitor country']
             i+=1
