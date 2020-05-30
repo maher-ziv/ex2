@@ -153,6 +153,6 @@ if __name__ == "__main__":
     To run only a single part, comment the line below which correspondes to the part you don't want to run.
     '''    
     #file_name = 'input.txt'
-    file_name = 'tests/in/test3.txt'
+    file_name = 'tests/in/test7.txt'
     partA(file_name)
     partB(file_name)
