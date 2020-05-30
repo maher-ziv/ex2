@@ -1,3 +1,4 @@
+#/bin/python3
 import hw2
 import pandas as pd
 from termcolor import colored, cprint
